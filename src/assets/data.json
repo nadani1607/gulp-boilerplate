@@ -1,0 +1,12 @@
+{
+  "header": {
+    "menu": [
+      "one",
+      "two",
+      "three"
+    ]
+  },
+  "footer": {
+    "title": "footer"
+  }
+}
