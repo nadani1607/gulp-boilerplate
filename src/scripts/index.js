@@ -1,3 +1,5 @@
-const test = 'test'
+(function () {
+  const test = 'test'
 
-console.log(test)
+  console.log(test)
+})();

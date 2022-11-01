@@ -11,14 +11,21 @@ const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
 const babel = require('gulp-babel');
 const pump = require('pump');
+const rename = require('gulp-rename');
+const plumber = require('gulp-plumber');
 
-// De-caching for data.json file
+/**
+ * De-caching for data.json file on changes
+ */
 function requireUncached($module) {
   delete require.cache[require.resolve($module)];
   return require($module);
 }
 
-// src/build paths
+/**
+ * All paths for tasks
+ * If 'watch' is not exists then will be watched 'source'
+ */
 const path = {
   build: './build',
   css: {
@@ -26,8 +33,9 @@ const path = {
     dest: './build/styles/',
   },
   html: {
-    source: './src/pages/**/*.pug',
+    source: './src/pages/*/index.pug',
     dest: './build/',
+    watch: './src/**/*.pug',
   },
   scripts: {
     source: './src/scripts/**/*.js',
@@ -44,13 +52,17 @@ const path = {
   data: './src/assets/data.json',
 };
 
-// Clean
+/**
+ * Clean build folder
+ */
 task('clean', done => {
   del.sync(path.build);
   done();
 });
 
-// Css
+/**
+ * Transform scss to css
+ */
 task('css', done => {
   src(path.css.source)
     .pipe(concat('main.scss'))
@@ -62,17 +74,28 @@ task('css', done => {
   done();
 });
 
-// Html
+/**
+ * Transform pug to html
+ */
 task('html', done => {
   src(path.html.source)
+    .pipe(plumber())
     .pipe(data(() => requireUncached(path.data)))
     .pipe(pug({ basedir: './' }))
+    .pipe(rename((path) => {
+      path.basename = path.dirname === 'home' ? 'index' : path.dirname
+      path.dirname = ''
+
+      return path;
+    }))
     .pipe(dest(path.build))
     .pipe(browserSync.stream());
   done();
 });
 
-// Scripts
+/**
+ * Concat and obfuscate all js file into one
+ */
 task('scripts', cb => {
   pump([
       src(path.scripts.source),
@@ -85,7 +108,9 @@ task('scripts', cb => {
   );
 });
 
-// Images
+/**
+ * Optimize images
+ */
 task('images', done => {
   src(path.images.source)
     .pipe(imagemin([
@@ -102,19 +127,26 @@ task('images', done => {
   done();
 });
 
-// Fonts
+/**
+ * Copy fonts
+ */
 task('fonts', done => {
   src(path.fonts.source)
     .pipe(dest(path.fonts.dest));
   done();
 });
 
-// BrowserSync
+/**
+ * Reload browser function
+ */
 function reload(done) {
   browserSync.reload();
   done();
 }
 
+/**
+ * Create synchronisation for dev server from 'build' folder
+ */
 task('browser-sync', done => {
   browserSync.init({
     server: {
@@ -125,14 +157,34 @@ task('browser-sync', done => {
   done();
 });
 
-// Watch files
+/**
+ * Listen every changing and reload browser for each path in list
+ */
 task('watch', done => {
   watch(path.css.source, series('css', reload));
-  watch(path.html.source, series('html', reload));
+  watch(path.html.watch, series('html', reload));
   watch(path.data, series('html', reload));
   watch(path.scripts.source, series('scripts', reload));
   done();
 });
 
-// Gulp scripts
-task('default', parallel('clean', 'css', 'html', 'scripts', 'fonts', 'images', 'browser-sync', 'watch'));
+/**
+ * Run dev server and listen changes
+ */
+task(
+  'default',
+  series(
+    parallel('css', 'html', 'scripts', 'fonts', 'images'),
+    parallel('browser-sync', 'watch')
+  )
+);
+
+/**
+ * Just build files
+ */
+task(
+  'build',
+  series('clean',
+    parallel('css', 'html', 'scripts', 'fonts', 'images')
+  )
+);
