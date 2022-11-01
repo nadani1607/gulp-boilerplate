@@ -1,9 +1,22 @@
 {
   "header": {
     "menu": [
-      "one",
-      "two",
-      "three"
+      {
+        "label": "About Us",
+        "link": "#preview"
+      },
+      {
+        "label": "Services",
+        "link": "#services"
+      },
+      {
+        "label": "Portfolio",
+        "link": "#portfolio"
+      },
+      {
+        "label": "Blog",
+        "link": "#blog"
+      }
     ]
   },
   "footer": {

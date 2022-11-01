@@ -1,14 +1,159 @@
 .header {
-  &__wrapper {
-    display: flex;
-  }
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.03);
+  background: rgba(#ffffff, 0.98);
 
-  &__item {
-    color: blue;
+  &.fixed {
+    .header__wrapper,
+    .header__link,
+    {
+      min-height: 44px;
+    }
 
-    & + & {
-      margin-left: 10px;
+    .logo img {
+      max-height: 25px;
     }
   }
 
+  .logo img {
+    max-height: 31px;
+    transition: .2s;
+  }
+
+  &__wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 64px;
+    transition: all 0.3s;
+  }
+
+  &__menu {
+    display: flex;
+    align-items: center;
+
+    @include media-breakpoint-down(md) {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      color: #ffffff;
+      background: rgba(#ffffff, 0.956692);
+
+      transition: all 0.3s;
+      opacity: 0;
+      height: 0;
+      z-index: -1;
+      pointer-events: none;
+
+      &.opened {
+        height: 100vh;
+        padding-top: 104px;
+        transition: all 0.3s;
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+  }
+
+  &__navigation {
+    display: flex;
+
+    @include media-breakpoint-down(md) {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  &__item {
+    font-weight: 400;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    padding: 7px 25px;
+    min-height: 64px;
+    color: $text-color;
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    @include media-breakpoint-down(md) {
+      font-size: 2.4rem;
+      font-weight: 500;
+    }
+  }
+
+  &__mobile {
+    display: none;
+
+    @include media-breakpoint-down(md) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  &__burger {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+
+    @include media-breakpoint-down(md) {
+      position: relative;
+      z-index: 1020;
+      display: flex;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    svg path {
+      stroke-width: 35;
+      stroke-linecap: round;
+      stroke: $text-color;
+      fill: none;
+      transition: all .5s ease-in-out;
+    }
+
+    /* In menu form */
+
+    .top_bar,
+    .bottom_bar {
+      stroke-dasharray: 240px 910px;
+    }
+
+    .middle_bar {
+      stroke-dasharray: 240px 240px;
+    }
+
+    /* In cross form */
+    .opened {
+      path {
+        //stroke: #ffffff;
+      }
+
+      .top_bar,
+      .bottom_bar {
+        stroke-dashoffset: -650px;
+      }
+
+      .middle_bar {
+        stroke-dasharray: 0 220px;
+        stroke-dashoffset: -120px;
+      }
+    }
+  }
 }

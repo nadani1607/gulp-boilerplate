@@ -83,8 +83,8 @@ task('html', done => {
     .pipe(data(() => requireUncached(path.data)))
     .pipe(pug({ basedir: './' }))
     .pipe(rename((path) => {
-      path.basename = path.dirname === 'home' ? 'index' : path.dirname
-      path.dirname = ''
+      path.basename = path.dirname === 'home' ? 'index' : path.dirname;
+      path.dirname = '';
 
       return path;
     }))
@@ -164,6 +164,7 @@ task('watch', done => {
   watch(path.css.source, series('css', reload));
   watch(path.html.watch, series('html', reload));
   watch(path.data, series('html', reload));
+  watch(path.images.source, series('images', reload));
   watch(path.scripts.source, series('scripts', reload));
   done();
 });
@@ -175,8 +176,8 @@ task(
   'default',
   series(
     parallel('css', 'html', 'scripts', 'fonts', 'images'),
-    parallel('browser-sync', 'watch')
-  )
+    parallel('browser-sync', 'watch'),
+  ),
 );
 
 /**
@@ -185,6 +186,6 @@ task(
 task(
   'build',
   series('clean',
-    parallel('css', 'html', 'scripts', 'fonts', 'images')
-  )
+    parallel('css', 'html', 'scripts', 'fonts', 'images'),
+  ),
 );
