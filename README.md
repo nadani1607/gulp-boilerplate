@@ -1,4 +1,5 @@
 # Gulp boilerplate
+### [DEMO](https://danial031193.github.io/gulp-boilerplate/)
 
 ## Scripts
 
@@ -11,6 +12,17 @@ npm start
 ```
 npm build
 ```
+
+## Automatic deploy to Github Pages
+
+(If this is not needed, then just delete the ".github" folder at root)
+#### ***The repository must be public for this to work!***
+
+#### Base config steps:
+1. Replace base tag at "src/common/components/layout.pug:11"
+   - URL Example: "https://[github username].github.io/[github repo name]/"
+2. Configure site preview in repository settings
+![plot](./.github/readme/repo-config.png)
 
 ## Source structure
 
