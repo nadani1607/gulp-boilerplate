@@ -30,6 +30,7 @@ const path = {
   build: './build',
   css: {
     source: './src/**/*.scss',
+    assets: './src/assets/styles/_*.scss',
     dest: './build/styles/',
   },
   html: {
@@ -64,7 +65,7 @@ task('clean', done => {
  * Transform scss to css
  */
 task('css', done => {
-  src(path.css.source)
+  src([path.css.assets, path.css.source])
     .pipe(concat('main.scss'))
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer(['last 5 versions', '> 1%'], { cascade: true }))
